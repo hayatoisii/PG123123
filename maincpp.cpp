@@ -1,52 +1,49 @@
 #include <stdio.h>
+#include <iostream>
+#include <list>
 
-// 抽象クラス IShape
-class IShape {
-public:
-    virtual void Size() = 0;  // 純粋仮想関数: 面積を計算する
-    virtual void Draw() = 0;  // 純粋仮想関数: 面積を表示する
+using namespace std;
 
-protected:
-    float size;   // 面積
-    float radius; // 共通で使う半径または幅の概念
-};
+int main() {
+    // 山手線駅名リスト（1970年）
+    list<const char*> rosen = {
+        "Tabata", "Nippori", "Uguisudani", "Ueno", "Okachimachi",
+        "Akihabara", "Kanda", "Tokyo", "Yurakucho", "Shimbashi",
+        "Hamamatsucho", "Tamachi", "Shinagawa", "Osaki", "Gotanda",
+        "Meguro", "Ebisu", "Shibuya", "Harajuku", "Yoyogi",
+        "Shinjuku", "Shin-Okubo", "Takadanobaba", "Mejiro", "Ikebukuro",
+        "Otsuka", "Sugamo", "Komagome"
+    };
 
-// 円クラス Circle
-class Circle : public IShape {
-public:
-    void Size() override {
-        radius = 5.0f;
-        printf("円の半径: %f\n", radius);
-        size = radius * radius * 3.14f; // 円の面積: πr^2
+    // 1971年: 西日暮里駅を追加（NipporiとTabataの間）
+    auto itr = rosen.begin();
+    while (*itr != "Nippori") ++itr;
+    rosen.insert(itr, "Nishi-Nippori");
+
+    // 2020年: 高輪ゲートウェイ駅を追加（TamachiとShinagawaの間）
+    itr = rosen.begin();
+    while (*itr != "Shinagawa") ++itr;
+    rosen.insert(itr, "Takanawa Gateway");
+
+    // 1970年の駅一覧を表示
+    cout << "Stations in 1970:" << endl;
+    for (const auto& station : rosen) {
+        if (station == "Nishi-Nippori" || station == "Takanawa Gateway") continue; // 1970年には存在しない駅をスキップ
+        cout << station << endl;
     }
-    void Draw() override { printf("円の面積: %f\n", size); }
-};
 
-// 矩形クラス Rectangle
-class Rectangle : public IShape {
-public:
-    void Size() override {
-        radius = 5.0f;
-        printf("矩形の幅: %f\n", radius * 2.0f);
-        size = radius * 2.0f * radius * 2.0f; // 矩形の面積: 幅×高さ
+    // 2019年の駅一覧を表示
+    cout << "\nStations in 2019:" << endl;
+    for (const auto& station : rosen) {
+        if (station == "Takanawa Gateway") continue; // 2019年には存在しない駅をスキップ
+        cout << station << endl;
     }
-    void Draw() override { printf("矩形の面積: %f\n", size); }
-};
 
-int main(void) {
-    // 抽象クラスのポインタ配列を用いて動的メモリ割り当て
-    IShape* ishape[2] = { new Circle(), new Rectangle() };
-
-    // 各形状のSize()とDraw()を呼び出し
-    ishape[0]->Size();
-    ishape[1]->Size();
-
-    ishape[0]->Draw();
-    ishape[1]->Draw();
-
-    // メモリ解放
-    delete ishape[0];
-    delete ishape[1];
+    // 2022年の駅一覧を表示
+    cout << "\nStations in 2022:" << endl;
+    for (const auto& station : rosen) {
+        cout << station << endl;
+    }
 
     return 0;
 }
