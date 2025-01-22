@@ -1,47 +1,57 @@
 #include <iostream>
+using namespace std;
 
-/*クラス名「TemplateClass」で複数クラステンプレートを定義*/
-template <typename Type, typename Type2>
-class TemplateClass {
+class Enemy {
 public:
-    // コンストラクタ（メンバ変数Number1,Number2を引数number1,number2で初期化）
-    TemplateClass(Type number1, Type2 number2) :
-        Number1(number1), Number2(number2) {
-    }
+    void update();
+    void approach(); // 接近状態
+    void attack();   // 攻撃状態
+    void retreat();  // 離脱状態
 
-    Type Min()
-    {
-        if (Number1 < Number2) // Number1よりNumber2が小さかったら
-        {
-            return static_cast<Type>(Number1);
-        }
-        else {
-            return static_cast<Type>(Number2);
-        }
-    }
-
+    // メンバ関数ポインタのテーブル
+    static void (Enemy::* table[])();
 private:
-    /*Type,Type2を使ってNumber1と2を定義*/
-    Type Number1;
-    Type2 Number2;
+    int index = 0; // 現在の状態を表すインデックス
+};
+
+void Enemy::approach() {
+    cout << "敵が接近！" << endl;
+}
+
+void Enemy::attack() {
+    cout << "敵が攻撃！" << endl;
+}
+
+void Enemy::retreat() {
+    cout << "敵が離脱" << endl;
+}
+
+void Enemy::update() {
+    // 関数ポインタのテーブルから関数を実行
+    (this->*table[index])();
+
+    cout << "次の状態に移行 (0: はい、 他: いいえ)";
+    int input;
+    cin >> input;
+
+    if (input == 0) {
+        index = (index + 1) % 3;
+    }
+}
+
+// static メンバ関数ポインタテーブルの実体化
+void (Enemy::* Enemy::table[])() = {
+    &Enemy::approach, // インデックス番号0
+    &Enemy::attack,   // インデックス番号1
+    &Enemy::retreat   // インデックス番号2
 };
 
 int main() {
+    Enemy enemy;
 
-    /*クラス名から型を考えて<>の中を定義*/
-    TemplateClass<int, float> intFloatTemplate(10, 50.0f);
-    TemplateClass<int, double> intDoubleTemplate(80, 13.0);
-    TemplateClass<float, int> floatIntTemplate(2.0f, 9);
-    TemplateClass<float, double> floatDoubleTemplate(11.0f, 3.5);
-    TemplateClass<double, int> doubleIntTemplate(666.0, 333);
-    TemplateClass<double, float> doubleFloatTemplate(435.8, 563.5f);
-
-    std::cout << "int(10)　と float(50.0f) を比べて小さい数字を表す：" << intFloatTemplate.Min() << std::endl;
-    std::cout << "int(80)　と double(13.0) を比べて小さい数字を表す：" << intDoubleTemplate.Min() << std::endl;
-    std::cout << "float(2.0f)　と int(9) を比べて小さい数字を表す：" << floatIntTemplate.Min() << std::endl;
-    std::cout << "float(11.0f)　と double(3.5) を比べて小さい数字を表す：" << floatDoubleTemplate.Min() << std::endl;
-    std::cout << "double(666.0)　と int(333) を比べて小さい数字を表す：" << doubleIntTemplate.Min() << std::endl;
-    std::cout << "double(435.8)　と float(563.5) を比べて小さい数字を表す：" << doubleFloatTemplate.Min() << std::endl;
+    while (true) {
+        enemy.update();
+    }
 
     return 0;
 }
