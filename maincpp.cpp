@@ -10,6 +10,7 @@ public:
 
     // メンバ関数ポインタのテーブル
     static void (Enemy::* table[])();
+
 private:
     int index = 0; // 現在の状態を表すインデックス
 };
