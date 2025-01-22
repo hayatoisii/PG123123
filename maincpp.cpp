@@ -26,7 +26,6 @@ private:
     Type2 Number2;
 };
 
-
 int main() {
 
     /*クラス名から型を考えて<>の中を定義*/
