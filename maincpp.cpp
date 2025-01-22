@@ -1,58 +1,52 @@
-#include <iostream>
-using namespace std;
+#include <stdio.h>
 
-class Enemy {
+// 抽象クラス IShape
+class IShape {
 public:
-    void update();
-    void approach(); // 接近状態
-    void attack();   // 攻撃状態
-    void retreat();  // 離脱状態
+    virtual void Size() = 0;  // 純粋仮想関数: 面積を計算する
+    virtual void Draw() = 0;  // 純粋仮想関数: 面積を表示する
 
-    // メンバ関数ポインタのテーブル
-    static void (Enemy::* table[])();
-
-private:
-    int index = 0; // 現在の状態を表すインデックス
+protected:
+    float size;   // 面積
+    float radius; // 共通で使う半径または幅の概念
 };
 
-void Enemy::approach() {
-    cout << "敵が接近！" << endl;
-}
-
-void Enemy::attack() {
-    cout << "敵が攻撃！" << endl;
-}
-
-void Enemy::retreat() {
-    cout << "敵が離脱" << endl;
-}
-
-void Enemy::update() {
-    // 関数ポインタのテーブルから関数を実行
-    (this->*table[index])();
-
-    cout << "次の状態に移行 (0: はい、 他: いいえ)";
-    int input;
-    cin >> input;
-
-    if (input == 0) {
-        index = (index + 1) % 3;
+// 円クラス Circle
+class Circle : public IShape {
+public:
+    void Size() override {
+        radius = 5.0f;
+        printf("円の半径: %f\n", radius);
+        size = radius * radius * 3.14f; // 円の面積: πr^2
     }
-}
-
-// static メンバ関数ポインタテーブルの実体化
-void (Enemy::* Enemy::table[])() = {
-    &Enemy::approach, // インデックス番号0
-    &Enemy::attack,   // インデックス番号1
-    &Enemy::retreat   // インデックス番号2
+    void Draw() override { printf("円の面積: %f\n", size); }
 };
 
-int main() {
-    Enemy enemy;
-
-    while (true) {
-        enemy.update();
+// 矩形クラス Rectangle
+class Rectangle : public IShape {
+public:
+    void Size() override {
+        radius = 5.0f;
+        printf("矩形の幅: %f\n", radius * 2.0f);
+        size = radius * 2.0f * radius * 2.0f; // 矩形の面積: 幅×高さ
     }
+    void Draw() override { printf("矩形の面積: %f\n", size); }
+};
+
+int main(void) {
+    // 抽象クラスのポインタ配列を用いて動的メモリ割り当て
+    IShape* ishape[2] = { new Circle(), new Rectangle() };
+
+    // 各形状のSize()とDraw()を呼び出し
+    ishape[0]->Size();
+    ishape[1]->Size();
+
+    ishape[0]->Draw();
+    ishape[1]->Draw();
+
+    // メモリ解放
+    delete ishape[0];
+    delete ishape[1];
 
     return 0;
 }
