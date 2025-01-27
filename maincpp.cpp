@@ -3,6 +3,7 @@
 #include <chrono>
 
 int main() {
+
     // 100,000文字の文字列を初期化
     std::string largeString(100000, 'a');
 
