@@ -1,52 +1,33 @@
-#include <stdio.h>
+ï»¿#include <iostream>
+#include <string>
+#include <chrono>
 
-// ’ŠÛƒNƒ‰ƒX IShape
-class IShape {
-public:
-    virtual void Size() = 0;  // ƒˆ‰¼‘zŠÖ”: –ÊÏ‚ğŒvZ‚·‚é
-    virtual void Draw() = 0;  // ƒˆ‰¼‘zŠÖ”: –ÊÏ‚ğ•\¦‚·‚é
+int main() {
+    // 100,000æ–‡å­—ã®æ–‡å­—åˆ—ã‚’åˆæœŸåŒ–
+    std::string largeString(100000, 'a');
 
-protected:
-    float size;   // –ÊÏ
-    float radius; // ‹¤’Ê‚Åg‚¤”¼Œa‚Ü‚½‚Í•‚ÌŠT”O
-};
+    // ã‚³ãƒ”ãƒ¼ã«ã‹ã‹ã‚‹æ™‚é–“ã‚’è¨ˆæ¸¬
+    auto startCopy = std::chrono::high_resolution_clock::now();
+    std::string copiedString = largeString; // ã‚³ãƒ”ãƒ¼
+    auto endCopy = std::chrono::high_resolution_clock::now();
 
-// ‰~ƒNƒ‰ƒX Circle
-class Circle : public IShape {
-public:
-    void Size() override {
-        radius = 5.0f;
-        printf("‰~‚Ì”¼Œa: %f\n", radius);
-        size = radius * radius * 3.14f; // ‰~‚Ì–ÊÏ: ƒÎr^2
-    }
-    void Draw() override { printf("‰~‚Ì–ÊÏ: %f\n", size); }
-};
+    // ç§»å‹•ã«ã‹ã‹ã‚‹æ™‚é–“ã‚’è¨ˆæ¸¬
+    auto startMove = std::chrono::high_resolution_clock::now();
+    std::string movedString = std::move(largeString); // ç§»å‹•
+    auto endMove = std::chrono::high_resolution_clock::now();
 
-// ‹éŒ`ƒNƒ‰ƒX Rectangle
-class Rectangle : public IShape {
-public:
-    void Size() override {
-        radius = 5.0f;
-        printf("‹éŒ`‚Ì•: %f\n", radius * 2.0f);
-        size = radius * 2.0f * radius * 2.0f; // ‹éŒ`‚Ì–ÊÏ: •~‚‚³
-    }
-    void Draw() override { printf("‹éŒ`‚Ì–ÊÏ: %f\n", size); }
-};
+    // çµæœã‚’ãƒã‚¤ã‚¯ãƒ­ç§’å˜ä½ã§è¨ˆç®—
+    auto copyDuration = std::chrono::duration_cast<std::chrono::microseconds>(endCopy - startCopy).count();
+    auto moveDuration = std::chrono::duration_cast<std::chrono::microseconds>(endMove - startMove).count();
 
-int main(void) {
-    // ’ŠÛƒNƒ‰ƒX‚Ìƒ|ƒCƒ“ƒ^”z—ñ‚ğ—p‚¢‚Ä“®“Iƒƒ‚ƒŠŠ„‚è“–‚Ä
-    IShape* ishape[2] = { new Circle(), new Rectangle() };
+    // çµæœã‚’è¡¨ç¤º
+    std::cout << "100,000æ–‡å­—ã‚’ç§»å‹•ã¨ã‚³ãƒ”ãƒ¼ã§æ¯”è¼ƒã—ã¾ã—ãŸã€‚" << std::endl;
+    std::cout << "ã‚³ãƒ”ãƒ¼: " << copyDuration << "Âµs" << std::endl;
+    std::cout << "ç§»å‹•: " << moveDuration << "Âµs" << std::endl;
 
-    // ŠeŒ`ó‚ÌSize()‚ÆDraw()‚ğŒÄ‚Ño‚µ
-    ishape[0]->Size();
-    ishape[1]->Size();
-
-    ishape[0]->Draw();
-    ishape[1]->Draw();
-
-    // ƒƒ‚ƒŠ‰ğ•ú
-    delete ishape[0];
-    delete ishape[1];
+    // ç¶šè¡Œå¾…ã¡
+    std::cout << "ç¶šè¡Œã™ã‚‹ã«ã¯ä½•ã‹ã‚­ãƒ¼ã‚’æŠ¼ã—ã¦ãã ã•ã„..." << std::endl;
+    std::cin.get();
 
     return 0;
 }
